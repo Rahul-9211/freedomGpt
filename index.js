@@ -1,6 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
-
+import cookieParser from "cookie-parser";
 // Load environment variables from .env file
 dotenv.config({
   path: '.env'
@@ -16,6 +16,7 @@ const port = process.env.PORT || 4000;
 // Connect to the database
 ConnectDB();
 app.use(express.json());
+app.use(cookieParser());
 app.use('/',userrouter);
 
 

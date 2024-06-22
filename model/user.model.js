@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import validator from "validator";
 import bcrypt from "bcrypt";
-
+import jwt from "jsonwebtoken";
 const UserSchema = new mongoose.Schema({
   firstname : {
     type: String,
@@ -44,7 +44,8 @@ const UserSchema = new mongoose.Schema({
   }
   ,
   deletedAt : {
-    type : Date
+    type : Date,
+    // default: Date.now
   }
   ,
   ModificationTimeline: [
@@ -69,16 +70,23 @@ const UserSchema = new mongoose.Schema({
   timestamps : true
 })
 
-const User = new mongoose.model("User",UserSchema);
+UserSchema.pre("save", async function(next){
+  if (!this.isModified('password')) return next()
 
-UserSchema.pre('save',async (next)=>{
- const hash = await bcrypt.hash(this.password,10);
- this.password=hash;
- next();
+  this.password = await bcrypt.hash(this.password, 10)
+  return next()
 })
+
+UserSchema.methods.generateAccessToken = async function(userDetails){
+ const token = await jwt.sign(userDetails, 'secret', { expiresIn: '1h' });
+ return token;
+}
 
 UserSchema.methods.isPasswordCorrect = async function(password){
   return await bcrypt.compare(password, this.password)
 }
+
+const User = new mongoose.model("User",UserSchema);
+
 
 export default User;
