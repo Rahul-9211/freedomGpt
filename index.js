@@ -2,11 +2,9 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cookieParser from "cookie-parser";
 // Load environment variables from .env file
-dotenv.config({
-  path: '.env'
-});
+dotenv.config();
 
-console.log(process.env.MONGO_DB_CONNECTION_URL)
+console.log("This is me ", process.env.MONGO_DB_CONNECTION_URL)
 import { ConnectDB } from './utils/dbconnection.js';
 import userrouter from './route/user.route.js';
 
