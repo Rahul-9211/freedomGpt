@@ -1,7 +1,6 @@
 import express from 'express';
-import dotenv from 'dotenv';
+import 'dotenv/config'
 import cookieParser from "cookie-parser";
-dotenv.config(); // Load environment variables at the start
 
 import { ConnectDB } from './utils/dbconnection.js';
 import userrouter from './route/user.route.js';
