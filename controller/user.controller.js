@@ -124,3 +124,69 @@ return res
     );
 })
 
+export const GoogleAuthLogin = async (accessToken, refreshToken, profile, done) =>{
+  try {
+    // Check if user already exists in database
+    let user = await User.findOne({ googleId: profile.id });
+
+    if (user) {
+      const accessToken = await generateAccessToken(
+        {
+          user : user._id
+        }
+      );
+      const refreshToken = await generateRefreshToken(
+        {
+          user : user._id
+        }
+  
+      );
+      await Token.create({
+        refreshToken,
+        loginType: 'GoogleAuth',
+        user: user._id,
+      })
+      return done(null, { user, accessToken, refreshToken });
+    } else {
+      // Create a new user if not found in the database
+      const newUser = await User.create({
+        googleId: profile.id,
+        firstname: profile.name?.givenName,
+        lastname: profile.name?.familyName || "none",
+        email: profile.emails[0].value,
+        username: profile.emails[0].value.split('@')[0],
+        activeStatus: true,
+        password: "GOOGLE", // or omit this field if you don't use it
+      });
+
+      // Log user creation in ModificationTimeline
+      newUser.ModificationTimeline.push({
+        user: newUser._id,
+        action: "created",
+      });
+      const accessToken = await generateAccessToken(
+        {
+          user : newUser._id
+        }
+      );
+      const refreshToken = await generateRefreshToken(
+        {
+          user : newUser._id
+        }
+      );
+      await newUser.save();
+      await Token.create({
+        refreshToken,
+        loginType: 'GoogleAuth',
+        user: newUser._id,
+      });
+
+      
+      return done(null, { newUser, accessToken, refreshToken });
+    }
+  } catch (err) {
+    console.error('Error in Google OAuth strategy:', err);
+    return done(err, null);
+  }
+
+}
