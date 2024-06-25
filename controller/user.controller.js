@@ -101,7 +101,7 @@ export const LoginUser = asyncHandler(async (req,res)=>{
 })
 
 export const Logout = asyncHandler(async (req,res)=>{
-
+  console.log("logout controller");
   await Token.findOneAndDelete({
     refreshtoken: req.cookies.refreshToken,
   })
