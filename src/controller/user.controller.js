@@ -1,8 +1,8 @@
-import User from "../model/user.model.js";
+import User from "../../model/user.model.js";
 import ApiError from "../utils/apiError.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiResponse from "../utils/apiResponse.js";
-import Token from "../model/token.model.js"
+import Token from "../../model/token.model.js"
 import {generateAccessToken , generateRefreshToken} from "../utils/token.js"
 export const RegisterUser = asyncHandler(async (req, res) => {
   const { firstname, lastname, email, password, username } = req.body;

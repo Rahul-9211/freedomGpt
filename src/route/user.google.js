@@ -2,7 +2,7 @@ import express from "express";
 import passport from "../utils/google-statergy.js";
 
 // import { setAccessTokenCookie, setRefreshTokenCookie } from '../utils/token.js';
-import Token from "../model/token.model.js"; // Adjust the path as per your project structure
+import Token from "../../model/token.model.js"; // Adjust the path as per your project structure
 // import passport from "../utils/google-statergy.js";
 // import passport from "passport";
 // console.log(8,process.env);

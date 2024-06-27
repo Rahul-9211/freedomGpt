@@ -1,11 +1,12 @@
 import express from 'express';
 import 'dotenv/config'
+import 'module-alias/register.js';
 import cookieParser from "cookie-parser";
 
-import { ConnectDB } from './utils/dbconnection.js';
-import userrouter from './route/user.route.js';
-import googleRouter from './route/user.google.js';
-import AIRoute from './route/airoute.js';
+import { ConnectDB } from './src/connection/dbconnection.js';
+import userrouter from './src/route/user.route.js';
+import googleRouter from './src/route/user.google.js';
+import AIRoute from './src/route/airoute.js';
 
 const app = express();
 const port = process.env.PORT || 4000;
