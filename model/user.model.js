@@ -6,6 +6,9 @@ const UserSchema = new mongoose.Schema({
   firstname : {
     type: String,
     required: true
+  },
+  googleId : {
+    type: String
   }
   ,
   lastname : {
@@ -24,7 +27,7 @@ const UserSchema = new mongoose.Schema({
   ,
   password : {
     type : String,
-    required : true
+    // required : true
   }
   ,
   activeStatus : {
