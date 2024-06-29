@@ -1,8 +1,10 @@
 import express from "express";
 import passport from "../utils/google-statergy.js";
-
+// verifyJWT
 // import { setAccessTokenCookie, setRefreshTokenCookie } from '../utils/token.js';
 import Token from "../model/token.model.js"; // Adjust the path as per your project structure
+// import { verify } from "jsonwebtoken";
+import { verifyJWT } from "../utils/verifyJWT.js";
 // import passport from "../utils/google-statergy.js";
 // import passport from "passport";
 // console.log(8,process.env);
@@ -54,11 +56,17 @@ googleRouter.get(
   }
 );
 googleRouter.get("/logout", (req, res) => {
+  console.log(req.logOut);
+  req.logout(function(err) {
+  // if (err) { return next(err); }
   res.clearCookie("AccessToken");
   res.clearCookie("refreshToken");
   res.redirect("/home1");
+  });
+
+  
 });
-googleRouter.get("/home", (req, res) => {
+googleRouter.get("/home", verifyJWT,(req, res) => {
   res.send("Hello there!");
 });
 googleRouter.get("/home1", (req, res) => {
