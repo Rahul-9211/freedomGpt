@@ -39,7 +39,7 @@ export const GeminiResponse = asyncHandler(async (req,res)=>{
   const {query} = req.body;
   // console.log(req.file);
   const result = await model.generateContent([
-    "What is in this photo?",
+    `${query}`,
     {inlineData: {data: Buffer.from(fs.readFileSync(`${req.file.path}`)).toString("base64"), 
     mimeType: 'image/png/jpeg'}}]
   );
