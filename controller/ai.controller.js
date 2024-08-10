@@ -14,6 +14,13 @@ const openai = new OpenAI(
 );
 export const GptResponse = asyncHandler(async (req,res)=>{
   const {query} = req.body;
+  const user = await User.findById(req.user._id);
+  if (user.credit < 10) {
+    return res.status(403).json(new ApiResponse(403, null, "Insufficient credits"));
+  }
+  user.credit -= 10;
+  await user.save();
+
   const completion = await openai.chat.completions.create({
     messages: [{ role: "system", content: `${query}` }],
     model: "gpt-3.5-turbo",
@@ -38,6 +45,12 @@ export const GeminiResponse = asyncHandler(async (req,res)=>{
   // console.log(req.body.query);
   const {query} = req.body;
   // console.log(req.file);
+  const user = await User.findById(req.user._id);
+  if (user.credit < 10) {
+    return res.status(403).json(new ApiResponse(403, null, "Insufficient credits"));
+  }
+  user.credit -= 10;
+  await user.save();
   const result = await model.generateContent([
     `${query}`,
     {inlineData: {data: Buffer.from(fs.readFileSync(`${req.file.path}`)).toString("base64"), 
