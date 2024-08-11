@@ -26,6 +26,12 @@ const openai = new OpenAI(
 );
 
 export const llama = asyncHandler(async(req,res)=>{
+  const user = await User.findById(req.user._id);
+  if (user.credit < 10) {
+    return res.status(403).json(new ApiResponse(403, null, "Insufficient credits"));
+  }
+  user.credit -= 10;
+  await user.save();
   const response = await cohere.chat({
 		message: `${req.body.query}`
   })
