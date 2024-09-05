@@ -27,8 +27,8 @@ export const InitiatePayment = asyncHandler(async (req, res) => {
       payment_method: "paypal",
     },
     redirect_urls: {
-      return_url: "http://localhost:3000/v1/success",
-      cancel_url: "http://localhost:3000/v1/cancel",
+      return_url: "https://freedomgpt-xn47.onrender.com/v1/success",
+      cancel_url: "https://freedomgpt-xn47.onrender.com/v1/cancel",
     },
     transactions: [
       {
@@ -66,7 +66,7 @@ export const SuccessPayment = asyncHandler(async (req, res) => {
   const payment = await Payment.findOne({ transactionId: paymentId });
 
   if (!payment) {
-    return res.redirect("http://localhost:3000/v1/cancel");
+    return res.redirect("https://freedomgpt-xn47.onrender.com/v1/cancel");
   }
 
   const executePaymentJson = {
@@ -83,7 +83,7 @@ export const SuccessPayment = asyncHandler(async (req, res) => {
 
   paypal.payment.execute(paymentId, executePaymentJson, async function (error, paymentData) {
     if (error) {
-      return res.redirect("http://localhost:3000/v1/cancel");
+      return res.redirect("https://freedomgpt-xn47.onrender.com/v1/cancel");
     } else {
       payment.status = "Success";
       await payment.save();
