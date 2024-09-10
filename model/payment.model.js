@@ -23,6 +23,10 @@ const PaymentSchema = new mongoose.Schema({
   status : {
     type : String,
   }
+  ,
+  credits : {
+    type : Number,
+  }
 },{
   timestamps : true
 })
