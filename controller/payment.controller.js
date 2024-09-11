@@ -46,8 +46,8 @@ export const InitiatePayment = asyncHandler(async (req, res) => {
       payment_method: "paypal",
     },
     redirect_urls: {
-      return_url: "http://localhost:3000/v1/success",
-      cancel_url: "http://localhost:3000/v1/cancel",
+      return_url: "https://free.1stgpt.ai/v1/success",
+      cancel_url: "https://free.1stgpt.ai/v1/cancel",
     },
     transactions: [
       {
@@ -115,7 +115,7 @@ export const SuccessPayment = asyncHandler(async (req, res) => {
       console.log(payment);
       if (error) {
         console.log(error);
-        return res.redirect("http://localhost:3000/v1/cancel");
+        return res.redirect("https://free.1stgpt.ai/v1/cancel");
       } else {
         const response = JSON.stringify(payment);
         console.log("working11");
