@@ -30,11 +30,19 @@ googleRouter.get(
     try {
       // Successful authentication, get the user and tokens from passport
       const { userDetails, accessToken, refreshToken } = req.user;
-      res
+      // console.log(req.user);
+      const UserDetail = req.user;
+        res
         .status(200)
-        .cookie("AccessToken", accessToken,{ httpOnly: true, sameSite: 'None', secure: true })
-        .cookie("refreshToken", refreshToken);
-      res.redirect("https://1stgpt.ai/get");
+        .cookie("AccessToken", accessToken, { httpOnly: true, sameSite: 'None', secure: true })
+        .cookie("refreshToken", refreshToken)
+        .json({
+          UserDetail,
+          accessToken,
+          refreshToken,
+          redirectUrl: "https://1stgpt.ai/get"
+        });
+      
       // Set tokens as cookies
       // setAccessTokenCookie(res, accessToken);
       // setRefreshTokenCookie(res, refreshToken);
