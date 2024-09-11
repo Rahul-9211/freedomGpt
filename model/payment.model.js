@@ -6,7 +6,7 @@ const PaymentSchema = new mongoose.Schema({
     type : mongoose.Schema.Types.ObjectId,
     ref : "User"
   },
-  transcationId : {
+  transactionId : {
     type : String,
     require : true,
   },

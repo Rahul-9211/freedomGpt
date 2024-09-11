@@ -4,6 +4,7 @@ import ApiError from "../utils/apiError.js";
 import ApiResponse from "../utils/apiResponse.js";
 import paypal from "paypal-rest-sdk";
 import Payment from "../model/payment.model.js";
+import User from "../model/user.model.js"
 // import asyncHandler from 'express-async-handler';
 
 const createPayPalPayment = (createPaymentJson) => {
@@ -45,8 +46,8 @@ export const InitiatePayment = asyncHandler(async (req, res) => {
       payment_method: "paypal",
     },
     redirect_urls: {
-      return_url: "https://free.1stgpt.ai/v1/success",
-      cancel_url: "https://free.1stgpt.ai/v1/cancel",
+      return_url: "http://localhost:3000/v1/success",
+      cancel_url: "http://localhost:3000/v1/cancel",
     },
     transactions: [
       {
@@ -62,8 +63,9 @@ export const InitiatePayment = asyncHandler(async (req, res) => {
   try {
     const payment = await createPayPalPayment(createPaymentJson);
     // console.log(payment);
-    console.log(req.user);
-
+    // console.log(req.user);
+    // console.log(payment.id);
+    // console.log("68");
     const userPayment = await Payment.create({
       user: req.user._id,
       transactionId: payment.id,
@@ -72,7 +74,7 @@ export const InitiatePayment = asyncHandler(async (req, res) => {
       paymentType: "paypal",
       credits: credits
     });
-
+    // console.log(userPayment);
     return res.status(200).json(new ApiResponse(200, payment, "Payment"));
   } catch (error) {
     console.log(error);
@@ -81,12 +83,18 @@ export const InitiatePayment = asyncHandler(async (req, res) => {
 });
 
 export const SuccessPayment = asyncHandler(async (req, res) => {
-  console.log(req.query);
-  const payerID = req.query.payerID;
+  // console.log(req.query,85);
+  // console.log(req.query);
+  const payerID = req.query.PayerID;
   const paymentId = req.query.paymentId;
-  const payment = await PayPal.find({
+  // console.log(paymentId);
+  // console.log(payerID);
+  const payment = await Payment.findOne({
     transactionId: paymentId,
   });
+  // console.log(payment)
+  // console.log("working");
+  // console.log(payment);
   const express_checkout_json = {
     payer_id: payerID,
     transactions: [
@@ -98,19 +106,31 @@ export const SuccessPayment = asyncHandler(async (req, res) => {
       },
     ],
   };
+  // https://free.1stgpt.ai/v1/cancel
   paypal.payment.execute(
     paymentId,
     express_checkout_json,
     async function (error, payment) {
+      // console.log(paymentId);
+      console.log(payment);
       if (error) {
-        return res.redirect("https://free.1stgpt.ai/v1/cancel");
+        console.log(error);
+        return res.redirect("http://localhost:3000/v1/cancel");
       } else {
         const response = JSON.stringify(payment);
+        console.log("working11");
         const ParsedResponse = JSON.parse(response);
-        payment.status = "Success";
-        await payment.save();
-        const user = await User.findById(req.user._id);
-        user.credit += payment.credits;
+        const payment1 = await Payment.findOne({
+          transactionId: payment.id,
+        });
+        payment1.status = "Success";
+        await payment1.save();
+        // req.user._id = "66dff0a798ccdf10394c3a61";
+        // const userId = mongoose.Types.ObjectId(req.user._id);
+        const user = await User.findById(payment1.user);
+        console.log(user);
+        
+        user.credit += payment1.credits;
         await user.save();
 
         return res.send("Success");

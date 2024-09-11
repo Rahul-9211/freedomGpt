@@ -116,6 +116,7 @@ export const GeminiResponse = asyncHandler(async (req,res)=>{
   const {query} = req.body;
   // console.log(req.file);
   const user = await User.findById(req.user._id);
+  console.log(user);
   if (user.credit < 1) {
     return res.status(403).json(new ApiResponse(403, null, "Insufficient credits"));
   }

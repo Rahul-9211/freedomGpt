@@ -12,8 +12,8 @@ paypal.configure({
 });
 
 PaymentRouter.post('/v1/pay',verifyJWT,InitiatePayment);
-PaymentRouter.get('/v1/success',verifyJWT,SuccessPayment);
-PaymentRouter.get('/v1/cancel',verifyJWT,CancelPayment);
+PaymentRouter.get('/v1/success',SuccessPayment);
+PaymentRouter.get('/v1/cancel',CancelPayment);
 
 
 

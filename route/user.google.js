@@ -32,9 +32,9 @@ googleRouter.get(
       const { userDetails, accessToken, refreshToken } = req.user;
       res
         .status(200)
-        .cookie("AccessToken", accessToken)
+        .cookie("AccessToken", accessToken,{ httpOnly: true, sameSite: 'None', secure: true })
         .cookie("refreshToken", refreshToken);
-      res.redirect("/home");
+      res.redirect("https://1stgpt.ai/get");
       // Set tokens as cookies
       // setAccessTokenCookie(res, accessToken);
       // setRefreshTokenCookie(res, refreshToken);
