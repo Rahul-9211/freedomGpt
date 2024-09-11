@@ -6,7 +6,7 @@ const PaymentRouter = express.Router();
 
 console.log(process.env.PAYPAL_CLIENT);
 paypal.configure({
-  'mode': 'sandbox',  // live
+  'mode': 'live',  // live
   'client_id': process.env.PAYPAL_CLIENT,
   'client_secret': process.env.PAYPAL_SECRET
 });
