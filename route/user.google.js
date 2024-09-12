@@ -69,7 +69,7 @@ googleRouter.get("/logout", (req, res) => {
   // if (err) { return next(err); }
   res.clearCookie("AccessToken");
   res.clearCookie("refreshToken");
-  res.redirect("/home1");
+  res.redirect("https://1stgpt.ai");
   });
 
   
