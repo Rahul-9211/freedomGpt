@@ -66,6 +66,10 @@ export const InitiatePayment = asyncHandler(async (req, res) => {
     // console.log(req.user);
     // console.log(payment.id);
     // console.log("68");
+    const userd = await User.findById(
+      req.user._id
+    );
+    console.log(userd);
     const userPayment = await Payment.create({
       user: req.user._id,
       transactionId: payment.id,
@@ -83,12 +87,10 @@ export const InitiatePayment = asyncHandler(async (req, res) => {
 });
 
 export const SuccessPayment = asyncHandler(async (req, res) => {
-  // console.log(req.query,85);
-  // console.log(req.query);
+
   const payerID = req.query.PayerID;
   const paymentId = req.query.paymentId;
-  // console.log(paymentId);
-  // console.log(payerID);
+
   const payment = await Payment.findOne({
     transactionId: paymentId,
   });
@@ -125,8 +127,7 @@ export const SuccessPayment = asyncHandler(async (req, res) => {
         });
         payment1.status = "Success";
         await payment1.save();
-        // req.user._id = "66dff0a798ccdf10394c3a61";
-        // const userId = mongoose.Types.ObjectId(req.user._id);
+       
         const user = await User.findById(payment1.user);
         console.log(user);
         
