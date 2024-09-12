@@ -128,6 +128,7 @@ export const GoogleAuthLogin = async (accessToken, refreshToken, profile, done) 
   try {
     // Check if user already exists in database
     let user = await User.findOne({ googleId: profile.id });
+    console.log(user);
 
     if (user) {
       const accessToken = await generateAccessToken(
@@ -164,6 +165,7 @@ export const GoogleAuthLogin = async (accessToken, refreshToken, profile, done) 
         user: newUser._id,
         action: "created",
       });
+      console.log(newUser);
       const accessToken = await generateAccessToken(
         {
           user : newUser._id
@@ -190,3 +192,21 @@ export const GoogleAuthLogin = async (accessToken, refreshToken, profile, done) 
   }
 
 }
+
+export const getToken = asyncHandler(async (req, res) => {
+  const user = await User.findById({
+    _id: req.user._id
+  })
+  if (!user) {
+    throw new ApiError(404, "User Not Found");
+  }
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        Credit: user.credit
+      },
+      "User credit !!!."
+    )
+  )
+})
