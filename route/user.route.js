@@ -1,5 +1,5 @@
 import express from "express";
-import { LoginUser, Logout, RegisterUser } from "../controller/user.controller.js";
+import { LoginUser, Logout, RegisterUser , getToken} from "../controller/user.controller.js";
 import { verifyJWT } from "../utils/verifyJWT.js";
 
 // console.log(process.env)
@@ -10,6 +10,7 @@ userrouter.post('/v1/user/login',LoginUser);
 
 
 userrouter.post('/v1/user/register',RegisterUser);
+userrouter.get('/v1/user/token', verifyJWT, getToken);
 
 userrouter.post('/v1/user/logout',verifyJWT,Logout);
 
