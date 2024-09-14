@@ -110,33 +110,77 @@ export const GptResponse = asyncHandler(async (req,res)=>{
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash"});
 
 
-export const GeminiResponse = asyncHandler(async (req,res)=>{
-  // console.log("working till");
-  // console.log(req.body.query);
-  const {query} = req.body;
-  // console.log(req.file);
+// export const GeminiResponse = asyncHandler(async (req,res)=>{
+//   // console.log("working till");
+//   // console.log(req.body.query);
+//   const {query} = req.body;
+//   // console.log(req.file);
+//   const user = await User.findById(req.user._id);
+//   console.log(user);
+//   if (user.credit < 1) {
+//     return res.status(403).json(new ApiResponse(403, null, "Insufficient credits"));
+//   }
+//   user.credit -= 1;
+//   await user.save();
+//   const result = await model.generateContent([
+//     `${query}`,
+//     {inlineData: {data: Buffer.from(fs.readFileSync(`${req.file.path}`)).toString("base64"), 
+//     mimeType: 'image/png/jpeg'}}]
+//   );
+//   // console.log(result.response.text());
+//   // console.log(text);
+//   fs.unlinkSync(req.file.path);
+//   res.status(200).json(
+//     new ApiResponse(
+//       200,
+//       {
+//         Output: result.response.text()
+//         },
+//         "done"
+//         )
+//       )
+// })
+
+export const GeminiResponse = asyncHandler(async (req, res) => {
+  const { query } = req.body;
   const user = await User.findById(req.user._id);
-  console.log(user);
+
   if (user.credit < 1) {
     return res.status(403).json(new ApiResponse(403, null, "Insufficient credits"));
   }
+
   user.credit -= 1;
   await user.save();
-  const result = await model.generateContent([
-    `${query}`,
-    {inlineData: {data: Buffer.from(fs.readFileSync(`${req.file.path}`)).toString("base64"), 
-    mimeType: 'image/png/jpeg'}}]
-  );
-  // console.log(result.response.text());
-  // console.log(text);
-  fs.unlinkSync(req.file.path);
+
+  let result;
+  
+  // Check if an image was uploaded
+  if (req.file) {
+    const inlineData = {
+      data: Buffer.from(fs.readFileSync(req.file.path)).toString("base64"),
+      mimeType: 'image/png/jpeg'
+    };
+
+    result = await model.generateContent([
+      `${query}`,
+      { inlineData }
+    ]);
+
+    // Delete the image file after processing
+    fs.unlinkSync(req.file.path);
+  } else {
+    // If no image is uploaded, only send the query
+    result = await model.generateContent([`${query}`]);
+  }
+
   res.status(200).json(
     new ApiResponse(
       200,
       {
         Output: result.response.text()
-        },
-        "done"
-        )
-      )
-})
+      },
+      "done"
+    )
+  );
+});
+
